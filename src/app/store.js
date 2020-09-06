@@ -1,8 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import {createStore, combineReducers} from 'redux';
+import breakReducer from './break';
+import sessionReducer from './session'
 
-export default configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
+const reducer = combineReducers({
+  break:breakReducer,
+  session:sessionReducer
 });
+
+const store = createStore(reducer);
+
+export default store
