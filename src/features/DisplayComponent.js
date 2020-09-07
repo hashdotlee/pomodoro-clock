@@ -25,68 +25,75 @@ class Display extends Component{
     constructor(props){
         super(props);
         this.state = {
-            isPlay:false,
-            session:props.sessionLen,
-            toggle:false
+            isPlay:true,
+            session:0,
+            toggle:true,
+            reset :true
         };
         this.handlePlay = this.handlePlay.bind(this);
         this.handleReset = this.handleReset.bind(this);
         this.Timer = this.Timer.bind(this);
-        this.audio = new Audio('https://www.soundjay.com/button/sounds/beep-04.mp3')
-    }
-    componentDidMount() {
-      this.audio.addEventListener('ended', () => this.setState({ play: false }));
-    }
-  
-    componentWillUnmount() {
-      this.audio.removeEventListener('ended', () => this.setState({ play: false }));  
     }
   
     handlePlay(){
         this.setState({
-            isPlay:!this.state.isPlay
+            isPlay:!this.state.isPlay,
+            reset:false
         });
         clearInterval(this.interval);
         this.Timer()
+        
     }
     handleReset(){
         clearInterval(this.interval);
+        document.getElementById("beep").load()
         this.setState({
-            session:this.props.sessionLen
+            isPlay:true,
+            reset:true,
+            session:0,
+            toggle:true
         })
         this.props.resetAction()
     }
 
     Timer () {
         if(this.state.isPlay){
-        this.interval = setInterval(()=>{        if(this.state.session<1/60&&!this.state.toggle){
+        this.interval = setInterval(()=>{
+          if(this.state.session>this.props.sessionLen-1/60 && this.state.toggle){
             this.setState({
-                session:this.props.breakLen,
+                session:0-this.props.breakLen+this.props.sessionLen,
                 toggle:!this.state.toggle
-            });this.audio.play()
-        } else if(this.state.session<1/60&&this.state.toggle){this.setState({
-            session:this.props.sessionLen,
+            });
+            document.getElementById("beep").play()
+          }
+          else if (this.state.session>this.props.sessionLen-1/60 && !this.state.toggle){
+            this.setState({
+            session:0,
             toggle:!this.state.toggle
-        });this.audio.play()}
-        else{ this.setState({session:this.state.session-1/60})}} , 1000);
+            });
+            document.getElementById("beep").play()
+            
+         }
+          else { 
+            this.setState({session:this.state.session+1/60});console.log(this.state.session)}
+          } , 1000);
 
         }
         else{
             clearInterval(this.interval);
         }
     }
-    componentWillReceiveProps(){
-        setTimeout(()=>{this.setState({
-            session:this.props.sessionLen
-        })},10)
-    }
+
     render(){
         console.log(this.state.isPlay)
+        let minute= Math.floor(this.props.sessionLen-this.state.session);
+        let second= Math.floor(((this.props.sessionLen -this.state.session)*60)%60);
         return (
             <div>
-                <h2>{Math.floor(this.state.session)}:{Math.floor((this.state.session*60)%60)}</h2>
-                <button onClick={this.handlePlay}> play/pause </button>
-                <button onClick={this.handleReset}> reset </button>
+                <h2 id="timer-label">{this.state.toggle?"Session":"Break"}</h2>
+                <h3 id="time-left">{minute<10?'0'+minute:minute}:{second<10?'0'+second:second}</h3>
+                <button id="start_stop" onClick={this.handlePlay}> play/pause </button>
+                <button id="reset" onClick={this.handleReset}> reset </button>
             </div>
         )
     }

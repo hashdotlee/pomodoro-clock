@@ -23,14 +23,16 @@ const mapDispatchToProps = (dispatch) => {
         ...bindActionCreators({incSessionAction,decSessionAction}, dispatch)
     }
 }
+
 class Session extends Component{
     
     render(){
         return (
             <div>
-                <h2>Session = {this.props.sessionLen}</h2>
-                <button onClick = {this.props.incSessionAction}> inc </button>
-                <button onClick={this.props.sessionLen>1?this.props.decSessionAction:null}> dec </button>
+                <h2 id="session-label">Session Length</h2>
+                <h3 id="session-length">{this.props.sessionLen}</h3>
+                <button id="session-increment"  onClick = {this.props.sessionLen<60?this.props.incSessionAction:null}> inc </button>
+                <button id="session-decrement" onClick={this.props.sessionLen>1?this.props.decSessionAction:null}> dec </button>
             </div>
         )
     }

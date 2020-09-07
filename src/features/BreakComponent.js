@@ -28,9 +28,10 @@ class Break extends Component{
     render(){
         return (
             <div>
-                <h2>Break = {this.props.breakLen}</h2>
-                <button onClick = {this.props.incBreakAction}> inc </button>
-                <button onClick={this.props.breakLen>1?this.props.decBreakAction:null}> dec </button>
+                <h2 id="break-label">Break Length</h2>
+                <h3 id="break-length">{this.props.breakLen}</h3>
+                <button id="break-increment" onClick = {this.props.breakLen<60?this.props.incBreakAction:null}> inc </button>
+                <button id="break-decrement" onClick={this.props.breakLen>1?this.props.decBreakAction:null}> dec </button>
             </div>
         )
     }
